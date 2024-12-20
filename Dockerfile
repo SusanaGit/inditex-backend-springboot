@@ -1,4 +1,4 @@
-FROM maven:3.9.4-bellsoft-21 AS build
+FROM maven:3.9.4-amazoncorretto-21 AS build
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ COPY src/ /app/src
 
 RUN mvn clean package -DskipTests
 
-FROM bellsoft/liberica-runtime-alpine:21
+FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
