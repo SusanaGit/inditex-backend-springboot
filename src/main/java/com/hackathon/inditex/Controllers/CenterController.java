@@ -17,7 +17,7 @@ public class CenterController {
 
     @PostMapping
     public void createNewCenter(@RequestBody CenterDTO newCenterDTO) {
-        System.out.println("newCenterDTO : " + newCenterDTO.getName());
+
     }
 
 }
