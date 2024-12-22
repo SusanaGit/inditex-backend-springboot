@@ -7,6 +7,8 @@ import com.hackathon.inditex.repositories.CenterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CenterService {
@@ -35,6 +37,11 @@ public class CenterService {
             return LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
 
         }
+    }
+
+    public List<Center> readCenters() {
+
+        return centerRepository.findAll();
 
     }
 }

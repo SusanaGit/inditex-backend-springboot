@@ -5,9 +5,12 @@ import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.dtos.ResponseDTO;
 import com.hackathon.inditex.mappers.CenterMapper;
 import com.hackathon.inditex.services.CenterService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/centers")
@@ -24,6 +27,12 @@ public class CenterController {
 
         return new ResponseDTO(centerService.saveCenter(newCenter));
 
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Center> readCenters() {
+        return centerService.readCenters();
     }
 
 }
