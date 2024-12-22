@@ -1,6 +1,8 @@
 package com.hackathon.inditex.Controllers;
 
+import com.hackathon.inditex.Entities.Center;
 import com.hackathon.inditex.dtos.CenterDTO;
+import com.hackathon.inditex.mappers.CenterMapper;
 import com.hackathon.inditex.services.CenterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,9 @@ public class CenterController {
 
     @PostMapping
     public void createNewCenter(@RequestBody CenterDTO newCenterDTO) {
+
+        Center newCenter = CenterMapper.centerDTOtoCenter(newCenterDTO);
+
 
     }
 
