@@ -22,6 +22,7 @@ public class CenterController {
 
         Center newCenter = CenterMapper.centerDTOtoCenter(newCenterDTO);
 
+        centerService.saveCenter(newCenter);
 
     }
 

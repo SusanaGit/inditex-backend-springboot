@@ -11,8 +11,8 @@ public class CenterService {
 
     private final CenterRepository centerRepository;
 
-    public Center testCenterService() {
-        return centerRepository.findAll().get(0);
+    public void saveCenter(Center newCenter) {
+        centerRepository.save(newCenter);
     }
 
 }
