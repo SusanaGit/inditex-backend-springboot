@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CenterService {
 
+    public static final String THERE_IS_ALREADY_A_LOGISTICS_CENTER_IN_THAT_POSITION = "There is already a logistics center in that position.";
+    public static final String CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY = "Current load cannot exceed max capacity.";
+
     private final CenterRepository centerRepository;
 
     public void saveCenter(Center newCenter) {
@@ -18,11 +21,11 @@ public class CenterService {
         if (centerRepository.existsByCoordinatesLatitudeAndCoordinatesLongitude(
                 newCenter.getCoordinates().getLatitude(), newCenter.getCoordinates().getLongitude())) {
 
-            throw new CoordinatesExistException("There is already a logistics center in that position.");
+            throw new CoordinatesExistException(THERE_IS_ALREADY_A_LOGISTICS_CENTER_IN_THAT_POSITION);
 
         } else if (newCenter.getCurrentLoad() > newCenter.getMaxCapacity()) {
 
-            throw new CurrentLoadMoreThanMaxCapacityException("Current load cannot exceed max capacity.");
+            throw new CurrentLoadMoreThanMaxCapacityException(CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
 
         } else {
 
