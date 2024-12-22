@@ -2,13 +2,12 @@ package com.hackathon.inditex.Controllers;
 
 import com.hackathon.inditex.Entities.Center;
 import com.hackathon.inditex.dtos.CenterDTO;
+import com.hackathon.inditex.dtos.ResponseDTO;
 import com.hackathon.inditex.mappers.CenterMapper;
 import com.hackathon.inditex.services.CenterService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/centers")
@@ -18,11 +17,12 @@ public class CenterController {
     private final CenterService centerService;
 
     @PostMapping
-    public void createNewCenter(@RequestBody CenterDTO newCenterDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDTO createNewCenter(@RequestBody CenterDTO newCenterDTO) {
 
         Center newCenter = CenterMapper.centerDTOtoCenter(newCenterDTO);
 
-        centerService.saveCenter(newCenter);
+        return new ResponseDTO(centerService.saveCenter(newCenter));
 
     }
 
