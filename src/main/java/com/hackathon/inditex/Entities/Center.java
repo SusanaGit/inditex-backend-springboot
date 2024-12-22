@@ -17,9 +17,9 @@ public class Center {
 
     private String status;
 
-    private Integer currentLoad;
-
     private Integer maxCapacity;
+
+    private Integer currentLoad;
 
     @Embedded
     private Coordinates coordinates;
