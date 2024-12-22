@@ -1,6 +1,8 @@
 package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.Entities.Center;
+import com.hackathon.inditex.exceptions.CoordinatesExistException;
+import com.hackathon.inditex.exceptions.CurrentLoadMoreThanMaxCapacityException;
 import com.hackathon.inditex.repositories.CenterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,11 @@ public class CenterService {
         if (centerRepository.existsByCoordinatesLatitudeAndCoordinatesLongitude(
                 newCenter.getCoordinates().getLatitude(), newCenter.getCoordinates().getLongitude())) {
 
-            System.out.println("There is already a logistics center in that position.");
+            throw new CoordinatesExistException("There is already a logistics center in that position.");
 
         } else if (newCenter.getCurrentLoad() > newCenter.getMaxCapacity()) {
 
-            System.out.println("Current load cannot exceed max capacity.");
+            throw new CurrentLoadMoreThanMaxCapacityException("Current load cannot exceed max capacity.");
 
         } else {
 
@@ -31,7 +33,4 @@ public class CenterService {
         }
 
     }
-
-
-
 }
