@@ -5,7 +5,6 @@ import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.dtos.ResponseDTO;
 import com.hackathon.inditex.mappers.CenterMapper;
 import com.hackathon.inditex.services.CenterService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +32,12 @@ public class CenterController {
     @ResponseStatus(HttpStatus.OK)
     public List<Center> readCenters() {
         return centerService.readCenters();
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO deleteCenterById(@PathVariable Long id) {
+        return new ResponseDTO(centerService.deleteCenter(id));
     }
 
 }
