@@ -1,6 +1,7 @@
 package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.Entities.Center;
+import com.hackathon.inditex.constants.MessageConstants;
 import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
 import com.hackathon.inditex.exceptions.CoordinatesExistException;
@@ -11,23 +12,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class CenterService {
-
-    public static final String THERE_IS_ALREADY_A_LOGISTICS_CENTER_IN_THAT_POSITION = "There is already a logistics center in that position.";
-    public static final String CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY = "Current load cannot exceed max capacity.";
-    public static final String LOGISTICS_CENTER_CREATED_SUCCESSFULLY = "Logistics center created successfully.";
-    public static final String LOGISTICS_CENTER_DELETED_SUCCESSFULLY = "Logistics center deleted successfully.";
-    public static final String CENTER_NOT_FOUND = "Center not found.";
-    public static final String LOGISTICS_CENTER_UPDATED_SUCCESSFULLY = "Logistics center updated successfully.";
 
     private final CenterRepository centerRepository;
 
     public String saveCenter(Center newCenter) {
         validateNewCenter(newCenter);
         centerRepository.save(newCenter);
-        return LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
+        return MessageConstants.LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
     }
 
     public List<Center> readCenters() {
@@ -42,28 +37,28 @@ public class CenterService {
 
         centerRepository.save(currentCenter);
 
-        return LOGISTICS_CENTER_UPDATED_SUCCESSFULLY;
+        return MessageConstants.LOGISTICS_CENTER_UPDATED_SUCCESSFULLY;
 
     }
 
     public String deleteCenter(Long idCenterToDelete) {
         centerRepository.deleteById(idCenterToDelete);
-        return LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
+        return MessageConstants.LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
     }
 
     private void validateNewCenter(Center newCenter) {
         if (centerRepository.existsByCoordinatesLatitudeAndCoordinatesLongitude(
                 newCenter.getCoordinates().getLatitude(), newCenter.getCoordinates().getLongitude())) {
-            throw new CoordinatesExistException(THERE_IS_ALREADY_A_LOGISTICS_CENTER_IN_THAT_POSITION);
+            throw new CoordinatesExistException(MessageConstants.THERE_IS_ALREADY_A_LOGISTICS_CENTER_IN_THAT_POSITION);
         }
         if (newCenter.getCurrentLoad() > newCenter.getMaxCapacity()) {
-            throw new CurrentLoadMoreThanMaxCapacityException(CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
+            throw new CurrentLoadMoreThanMaxCapacityException(MessageConstants.CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
         }
     }
 
     private Center obtainCenterById(Long idCenter) {
         return centerRepository.findById(idCenter)
-                .orElseThrow(() -> new CenterNotFoundException(CENTER_NOT_FOUND));
+                .orElseThrow(() -> new CenterNotFoundException(MessageConstants.CENTER_NOT_FOUND));
     }
 
     private void updateCenterValues(Center currentCenter, CenterDTO updatedCenterDTO) {
@@ -93,7 +88,7 @@ public class CenterService {
         if (updatedCenterDTO.getCurrentLoad() != null) {
 
             if (updatedCenterDTO.getCurrentLoad() > currentCenter.getMaxCapacity()) {
-                throw new CurrentLoadMoreThanMaxCapacityException(CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
+                throw new CurrentLoadMoreThanMaxCapacityException(MessageConstants.CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
             }
 
             currentCenter.setCurrentLoad(updatedCenterDTO.getCurrentLoad());
