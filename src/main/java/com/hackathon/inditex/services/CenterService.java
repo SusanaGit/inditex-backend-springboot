@@ -38,42 +38,7 @@ public class CenterService {
 
         Center currentCenter = obtainCenterById(idCenterToUpdate);
 
-
-        if (updatedCenterDTO.getName() != null) {
-            currentCenter.setName(updatedCenterDTO.getName());
-        }
-
-        if (updatedCenterDTO.getCapacity() != null) {
-            currentCenter.setCapacity(updatedCenterDTO.getCapacity());
-        }
-
-        if (updatedCenterDTO.getStatus() != null) {
-            currentCenter.setStatus(updatedCenterDTO.getStatus());
-        }
-
-        if (updatedCenterDTO.getMaxCapacity() != null) {
-            currentCenter.setMaxCapacity(updatedCenterDTO.getMaxCapacity());
-        }
-
-        if (updatedCenterDTO.getCurrentLoad() != null) {
-
-            if (updatedCenterDTO.getCurrentLoad() > currentCenter.getMaxCapacity()) {
-                throw new CurrentLoadMoreThanMaxCapacityException(CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
-            }
-
-            currentCenter.setCurrentLoad(updatedCenterDTO.getCurrentLoad());
-        }
-
-        if (updatedCenterDTO.getCoordinates() != null) {
-
-            if (updatedCenterDTO.getCoordinates().getLongitude() != null) {
-                currentCenter.getCoordinates().setLongitude(updatedCenterDTO.getCoordinates().getLongitude());
-            }
-
-            if (updatedCenterDTO.getCoordinates().getLatitude() != null) {
-                currentCenter.getCoordinates().setLatitude(updatedCenterDTO.getCoordinates().getLatitude());
-            }
-        }
+        updateCenterValues(currentCenter, updatedCenterDTO);
 
         centerRepository.save(currentCenter);
 
@@ -99,5 +64,52 @@ public class CenterService {
     private Center obtainCenterById(Long idCenter) {
         return centerRepository.findById(idCenter)
                 .orElseThrow(() -> new CenterNotFoundException(CENTER_NOT_FOUND));
+    }
+
+    private void updateCenterValues(Center currentCenter, CenterDTO updatedCenterDTO) {
+
+        if (updatedCenterDTO.getName() != null) {
+            currentCenter.setName(updatedCenterDTO.getName());
+        }
+
+        if (updatedCenterDTO.getCapacity() != null) {
+            currentCenter.setCapacity(updatedCenterDTO.getCapacity());
+        }
+
+        if (updatedCenterDTO.getStatus() != null) {
+            currentCenter.setStatus(updatedCenterDTO.getStatus());
+        }
+
+        if (updatedCenterDTO.getMaxCapacity() != null) {
+            currentCenter.setMaxCapacity(updatedCenterDTO.getMaxCapacity());
+        }
+
+        updateCurrentLoadCenter(currentCenter, updatedCenterDTO);
+
+        updateCoordinatesCenter(currentCenter, updatedCenterDTO);
+    }
+
+    private void updateCurrentLoadCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
+        if (updatedCenterDTO.getCurrentLoad() != null) {
+
+            if (updatedCenterDTO.getCurrentLoad() > currentCenter.getMaxCapacity()) {
+                throw new CurrentLoadMoreThanMaxCapacityException(CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
+            }
+
+            currentCenter.setCurrentLoad(updatedCenterDTO.getCurrentLoad());
+        }
+    }
+
+    private void updateCoordinatesCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
+        if (updatedCenterDTO.getCoordinates() != null) {
+
+            if (updatedCenterDTO.getCoordinates().getLongitude() != null) {
+                currentCenter.getCoordinates().setLongitude(updatedCenterDTO.getCoordinates().getLongitude());
+            }
+
+            if (updatedCenterDTO.getCoordinates().getLatitude() != null) {
+                currentCenter.getCoordinates().setLatitude(updatedCenterDTO.getCoordinates().getLatitude());
+            }
+        }
     }
 }
