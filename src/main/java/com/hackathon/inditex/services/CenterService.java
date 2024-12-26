@@ -25,29 +25,13 @@ public class CenterService {
     private final CenterRepository centerRepository;
 
     public String saveCenter(Center newCenter) {
-
-        if (centerRepository.existsByCoordinatesLatitudeAndCoordinatesLongitude(
-                newCenter.getCoordinates().getLatitude(), newCenter.getCoordinates().getLongitude())) {
-
-            throw new CoordinatesExistException(THERE_IS_ALREADY_A_LOGISTICS_CENTER_IN_THAT_POSITION);
-
-        } else if (newCenter.getCurrentLoad() > newCenter.getMaxCapacity()) {
-
-            throw new CurrentLoadMoreThanMaxCapacityException(CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
-
-        } else {
-
-            centerRepository.save(newCenter);
-
-            return LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
-
-        }
+        validateNewCenter(newCenter);
+        centerRepository.save(newCenter);
+        return LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
     }
 
     public List<Center> readCenters() {
-
         return centerRepository.findAll();
-
     }
 
     public String updateCenter(Long idCenterToUpdate, CenterDTO updatedCenterDTO) {
@@ -108,6 +92,17 @@ public class CenterService {
         centerRepository.deleteById(idCenterToDelete);
         return LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
     }
+
+    private void validateNewCenter(Center newCenter) {
+        if (centerRepository.existsByCoordinatesLatitudeAndCoordinatesLongitude(
+                newCenter.getCoordinates().getLatitude(), newCenter.getCoordinates().getLongitude())) {
+            throw new CoordinatesExistException(THERE_IS_ALREADY_A_LOGISTICS_CENTER_IN_THAT_POSITION);
+        }
+        if (newCenter.getCurrentLoad() > newCenter.getMaxCapacity()) {
+            throw new CurrentLoadMoreThanMaxCapacityException(CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
+        }
+    }
+
 
 
 }
