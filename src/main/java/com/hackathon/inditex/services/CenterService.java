@@ -36,9 +36,9 @@ public class CenterService {
 
     public String updateCenter(Long idCenterToUpdate, CenterDTO updatedCenterDTO) {
 
-        if (centerRepository.existsById(idCenterToUpdate)) {
+        Center currentCenter = obtainCenterById(idCenterToUpdate);
 
-            Center currentCenter = centerRepository.getReferenceById(idCenterToUpdate);
+        if (centerRepository.existsById(idCenterToUpdate)) {
 
             if (updatedCenterDTO.getName() != null) {
                 currentCenter.setName(updatedCenterDTO.getName());
@@ -103,6 +103,9 @@ public class CenterService {
         }
     }
 
-
+    private Center obtainCenterById(Long idCenter) {
+        return centerRepository.findById(idCenter)
+                .orElseThrow(() -> new CenterNotFoundException(CENTER_NOT_FOUND));
+    }
 
 }
