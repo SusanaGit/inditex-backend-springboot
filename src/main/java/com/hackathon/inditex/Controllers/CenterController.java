@@ -4,7 +4,7 @@ import com.hackathon.inditex.Entities.Center;
 import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.dtos.ResponseDTO;
 import com.hackathon.inditex.mappers.CenterMapper;
-import com.hackathon.inditex.services.CenterService;
+import com.hackathon.inditex.services.ICenterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CenterController {
 
-    private final CenterService centerService;
+    private final ICenterService customCenterService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -24,28 +24,28 @@ public class CenterController {
 
         Center newCenter = CenterMapper.centerDTOtoCenter(newCenterDTO);
 
-        return new ResponseDTO(centerService.saveCenter(newCenter));
+        return new ResponseDTO(customCenterService.saveCenter(newCenter));
 
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Center> readCenters() {
-        return centerService.readCenters();
+        return customCenterService.readCenters();
     }
 
     @PatchMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO updateCenter(@PathVariable Long id, @RequestBody CenterDTO updatedCenterDTO) {
 
-        return new ResponseDTO(centerService.updateCenter(id, updatedCenterDTO));
+        return new ResponseDTO(customCenterService.updateCenter(id, updatedCenterDTO));
 
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO deleteCenterById(@PathVariable Long id) {
-        return new ResponseDTO(centerService.deleteCenter(id));
+        return new ResponseDTO(customCenterService.deleteCenter(id));
     }
 
 }

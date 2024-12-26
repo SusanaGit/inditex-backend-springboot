@@ -15,20 +15,23 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CenterService {
+public class CenterService implements ICenterService {
 
     private final CenterRepository centerRepository;
 
+    @Override
     public String saveCenter(Center newCenter) {
         validateNewCenter(newCenter);
         centerRepository.save(newCenter);
         return MessageConstants.LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
     }
 
+    @Override
     public List<Center> readCenters() {
         return centerRepository.findAll();
     }
 
+    @Override
     public String updateCenter(Long idCenterToUpdate, CenterDTO updatedCenterDTO) {
 
         Center currentCenter = obtainCenterById(idCenterToUpdate);
@@ -41,6 +44,7 @@ public class CenterService {
 
     }
 
+    @Override
     public String deleteCenter(Long idCenterToDelete) {
         centerRepository.deleteById(idCenterToDelete);
         return MessageConstants.LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
