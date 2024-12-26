@@ -1,7 +1,6 @@
 package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.Entities.Center;
-import com.hackathon.inditex.Entities.Coordinates;
 import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
 import com.hackathon.inditex.exceptions.CoordinatesExistException;
@@ -109,4 +108,6 @@ public class CenterService {
         centerRepository.deleteById(idCenterToDelete);
         return LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
     }
+
+
 }
