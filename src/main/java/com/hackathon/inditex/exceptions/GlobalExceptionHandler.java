@@ -1,6 +1,7 @@
 package com.hackathon.inditex.exceptions;
 
 import com.hackathon.inditex.dtos.ResponseDTO;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +18,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CurrentLoadMoreThanMaxCapacityException.class)
     public ResponseEntity<ResponseDTO> handleCurrentLoadMoreThanMaxCapacityException(CurrentLoadMoreThanMaxCapacityException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(e.getMessage()));
+    }
+
+    @ExceptionHandler(CenterNotFoundException.class)
+    public ResponseEntity<ResponseDTO> handleCenterNotFoundException(CenterNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO(e.getMessage()));
     }
 
 }

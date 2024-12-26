@@ -12,9 +12,9 @@ public class CenterDTO {
 
     private String status;
 
-    private int maxCapacity;
+    private Integer maxCapacity;
 
-    private int currentLoad;
+    private Integer currentLoad;
 
     private Coordinates coordinates;
 

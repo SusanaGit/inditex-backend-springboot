@@ -34,6 +34,14 @@ public class CenterController {
         return centerService.readCenters();
     }
 
+    @PatchMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDTO updateCenter(@PathVariable Long id, @RequestBody CenterDTO updatedCenterDTO) {
+
+        return new ResponseDTO(centerService.updateCenter(id, updatedCenterDTO));
+
+    }
+
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO deleteCenterById(@PathVariable Long id) {
