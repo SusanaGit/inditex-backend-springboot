@@ -74,6 +74,11 @@ public class CenterService {
             }
 
             if (updatedCenterDTO.getCurrentLoad() != null) {
+
+                if (updatedCenterDTO.getCurrentLoad() > currentCenter.getMaxCapacity()) {
+                    throw new CurrentLoadMoreThanMaxCapacityException(CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
+                }
+
                 currentCenter.setCurrentLoad(updatedCenterDTO.getCurrentLoad());
             }
 
@@ -99,8 +104,6 @@ public class CenterService {
 
         }
     }
-
-    private Coordinates coordinates;
 
     public String deleteCenter(Long idCenterToDelete) {
         centerRepository.deleteById(idCenterToDelete);
