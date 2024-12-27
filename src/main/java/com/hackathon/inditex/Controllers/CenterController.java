@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CenterController {
 
-    private final ICenterService customCenterService;
+    private final ICenterService centerService;
     private final ICenterMapper centerMapper;
 
     @PostMapping
@@ -25,28 +25,28 @@ public class CenterController {
 
         Center newCenter = centerMapper.centerDTOtoCenter(newCenterDTO);
 
-        return new ResponseDTO(customCenterService.saveCenter(newCenter));
+        return new ResponseDTO(centerService.saveCenter(newCenter));
 
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Center> readCenters() {
-        return customCenterService.readCenters();
+        return centerService.readCenters();
     }
 
     @PatchMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO updateCenter(@PathVariable Long id, @RequestBody CenterDTO updatedCenterDTO) {
 
-        return new ResponseDTO(customCenterService.updateCenter(id, updatedCenterDTO));
+        return new ResponseDTO(centerService.updateCenter(id, updatedCenterDTO));
 
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseDTO deleteCenterById(@PathVariable Long id) {
-        return new ResponseDTO(customCenterService.deleteCenter(id));
+        return new ResponseDTO(centerService.deleteCenter(id));
     }
 
 }
