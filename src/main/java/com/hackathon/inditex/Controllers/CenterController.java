@@ -3,7 +3,7 @@ package com.hackathon.inditex.Controllers;
 import com.hackathon.inditex.Entities.Center;
 import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.dtos.ResponseDTO;
-import com.hackathon.inditex.mappers.CenterMapper;
+import com.hackathon.inditex.mappers.ICenterMapper;
 import com.hackathon.inditex.services.ICenterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,12 +17,13 @@ import java.util.List;
 public class CenterController {
 
     private final ICenterService customCenterService;
+    private final ICenterMapper centerMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseDTO createNewCenter(@RequestBody CenterDTO newCenterDTO) {
 
-        Center newCenter = CenterMapper.centerDTOtoCenter(newCenterDTO);
+        Center newCenter = centerMapper.centerDTOtoCenter(newCenterDTO);
 
         return new ResponseDTO(customCenterService.saveCenter(newCenter));
 

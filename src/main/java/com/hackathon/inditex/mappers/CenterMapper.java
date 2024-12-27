@@ -3,10 +3,12 @@ package com.hackathon.inditex.mappers;
 import com.hackathon.inditex.Entities.Center;
 import com.hackathon.inditex.Entities.Coordinates;
 import com.hackathon.inditex.dtos.CenterDTO;
+import org.springframework.stereotype.Service;
 
-public class CenterMapper {
+@Service
+public class CenterMapper implements ICenterMapper {
 
-    public static Center centerDTOtoCenter(CenterDTO newCenterDTO) {
+    public Center centerDTOtoCenter(CenterDTO newCenterDTO) {
 
         Center newCenter = new Center();
 
