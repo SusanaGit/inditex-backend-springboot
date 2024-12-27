@@ -16,8 +16,10 @@ public class OrderMapper implements IOrderMapper {
         newOrder.setCustomerId(newOrderDTO.getCustomerId());
         newOrder.setSize(newOrderDTO.getSize());
 
-        Coordinates newCoordinatesOrder = new Coordinates();
+        newOrder.setStatus("PENDING");
+        newOrder.setAssignedCenter(null);
 
+        Coordinates newCoordinatesOrder = new Coordinates();
         newCoordinatesOrder.setLatitude(newOrderDTO.getCoordinates().getLatitude());
         newCoordinatesOrder.setLongitude(newOrderDTO.getCoordinates().getLongitude());
 
