@@ -1,7 +1,10 @@
 package com.hackathon.inditex.Controllers;
 
 import com.hackathon.inditex.Entities.Order;
+import com.hackathon.inditex.dtos.OrderDTO;
 import com.hackathon.inditex.dtos.ResponseDTO;
+import com.hackathon.inditex.mappers.IOrderMapper;
+import com.hackathon.inditex.services.IOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +19,11 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseOrderDTO createNewOrder(@RequestBody OrderDTO newOrderDTO) {
+    public Order createNewOrder(@RequestBody OrderDTO newOrderDTO) {
 
         Order newOrder = orderMapper.orderDTOtoOrder(newOrderDTO);
 
-        return new ResponseDTO(orderService.saveOrder(newOrder));
+        return orderService.saveOrder(newOrder);
 
     }
 
