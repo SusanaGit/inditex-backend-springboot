@@ -1,5 +1,6 @@
 package com.hackathon.inditex.Controllers;
 
+import com.hackathon.inditex.Entities.Center;
 import com.hackathon.inditex.Entities.Order;
 import com.hackathon.inditex.constants.MessageConstants;
 import com.hackathon.inditex.dtos.OrderDTO;
@@ -9,6 +10,8 @@ import com.hackathon.inditex.services.IOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -37,4 +40,9 @@ public class OrderController {
 
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Order> readOrders() {
+        return orderService.readOrders();
+    }
 }

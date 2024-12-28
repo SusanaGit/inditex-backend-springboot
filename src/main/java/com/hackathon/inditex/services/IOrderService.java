@@ -2,8 +2,11 @@ package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.Entities.Order;
 
+import java.util.List;
+
 public interface IOrderService {
 
     Order saveOrder(Order newOrder);
 
+    List<Order> readOrders();
 }
