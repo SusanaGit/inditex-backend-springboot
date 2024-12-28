@@ -31,11 +31,33 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
             String sizeOrder = order.getSize();
 
-            List<Center> listCenters = centerRepository.findByCapacity(sizeOrder);
+            List<Center> listCentersByCapacity = centerRepository.findByCapacity(sizeOrder);
 
-            processedOrderDTO.setDistance(null);
+            if (listCentersByCapacity.isEmpty()) {
+
+                processedOrderDTO.setMessage("No available centers support the order type.");
+                processedOrderDTO.setDistance(null);
+                processedOrderDTO.setAssignedLogisticsCenter(null);
+
+            } else {
+
+                List<Center> availableCenters = centerRepository.findAvailableCenters(listCentersByCapacity);
+
+                if (availableCenters.isEmpty()) {
+
+                    processedOrderDTO.setMessage("All centers are at maximum capacity.");
+                    processedOrderDTO.setDistance(null);
+                    processedOrderDTO.setAssignedLogisticsCenter(null);
+
+                } else {
+                    processedOrderDTO.setDistance(null);
+                    processedOrderDTO.setAssignedLogisticsCenter(null);
+
+                }
+
+            }
+
             processedOrderDTO.setOrderId(order.getId());
-            processedOrderDTO.setAssignedLogisticsCenter(null);
             processedOrderDTO.setStatus(order.getStatus());
 
             listProcessedOrdersDTO.add(processedOrderDTO);

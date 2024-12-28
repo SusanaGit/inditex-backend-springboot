@@ -15,4 +15,6 @@ public class ProcessedOrderDTO {
 
     private String status;
 
+    private String message;
+
 }
