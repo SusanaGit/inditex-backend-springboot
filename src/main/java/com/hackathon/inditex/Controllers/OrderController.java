@@ -1,8 +1,9 @@
 package com.hackathon.inditex.Controllers;
 
 import com.hackathon.inditex.Entities.Order;
+import com.hackathon.inditex.constants.MessageConstants;
 import com.hackathon.inditex.dtos.OrderDTO;
-import com.hackathon.inditex.dtos.ResponseDTO;
+import com.hackathon.inditex.dtos.ResponseOrderDTO;
 import com.hackathon.inditex.mappers.IOrderMapper;
 import com.hackathon.inditex.services.IOrderService;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,13 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Order createNewOrder(@RequestBody OrderDTO newOrderDTO) {
+    public ResponseOrderDTO createNewOrder(@RequestBody OrderDTO newOrderDTO) {
 
         Order newOrder = orderMapper.orderDTOtoOrder(newOrderDTO);
 
-        return orderService.saveOrder(newOrder);
+        Order newOrderFinal = orderService.saveOrder(newOrder);
+
+        return new ResponseOrderDTO(newOrderFinal, MessageConstants.ORDER_CREATED_SUCCESSFULLY);
 
     }
 

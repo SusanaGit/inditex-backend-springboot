@@ -8,5 +8,6 @@ public class MessageConstants {
     public static final String LOGISTICS_CENTER_DELETED_SUCCESSFULLY = "Logistics center deleted successfully.";
     public static final String CENTER_NOT_FOUND = "Center not found.";
     public static final String LOGISTICS_CENTER_UPDATED_SUCCESSFULLY = "Logistics center updated successfully.";
+    public static final String ORDER_CREATED_SUCCESSFULLY = "Order created successfully in PENDING status.";
 
 }
