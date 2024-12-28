@@ -26,7 +26,14 @@ public class OrderController {
 
         Order newOrderFinal = orderService.saveOrder(newOrder);
 
-        return new ResponseOrderDTO(newOrderFinal, MessageConstants.ORDER_CREATED_SUCCESSFULLY);
+        return new ResponseOrderDTO(
+                newOrderFinal.getId(),
+                newOrderFinal.getCustomerId(),
+                newOrderFinal.getSize(),
+                newOrderFinal.getAssignedCenter(),
+                newOrderFinal.getCoordinates(),
+                newOrderFinal.getStatus(),
+                MessageConstants.ORDER_CREATED_SUCCESSFULLY);
 
     }
 
