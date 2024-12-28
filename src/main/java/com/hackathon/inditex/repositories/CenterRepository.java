@@ -11,7 +11,7 @@ public interface CenterRepository extends JpaRepository<Center, Long> {
 
     boolean existsByCoordinatesLatitudeAndCoordinatesLongitude(Double latitude, Double longitude);
 
-    @Query("SELECT center FROM Center center WHERE center.capacity LIKE %:capacity%")
+    @Query("SELECT center FROM Center center WHERE center.capacity LIKE %:capacity% AND center.currentLoad < center.maxCapacity")
     List<Center> findByCapacity(@Param("capacity") String capacity);
 
 }
