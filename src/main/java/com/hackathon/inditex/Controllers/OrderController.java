@@ -4,6 +4,7 @@ import com.hackathon.inditex.Entities.Order;
 import com.hackathon.inditex.constants.MessageConstants;
 import com.hackathon.inditex.dtos.OrderDTO;
 import com.hackathon.inditex.dtos.ProcessedOrderDTO;
+import com.hackathon.inditex.dtos.ResponseOrderAssignationsDTO;
 import com.hackathon.inditex.dtos.ResponseOrderDTO;
 import com.hackathon.inditex.mappers.IOrderMapper;
 import com.hackathon.inditex.services.IOrderAssignationsService;
@@ -49,7 +50,10 @@ public class OrderController {
 
     @PostMapping("order-assignations")
     @ResponseStatus(HttpStatus.OK)
-    public List<ProcessedOrderDTO> orderAssignations() {
-        return orderAssignationsService.assignCenterToOrders();
+    public ResponseOrderAssignationsDTO orderAssignations() {
+
+        List<ProcessedOrderDTO> listProcessedOrdersDTO = orderAssignationsService.assignCenterToOrders();
+
+        return new ResponseOrderAssignationsDTO(listProcessedOrdersDTO);
     }
 }
