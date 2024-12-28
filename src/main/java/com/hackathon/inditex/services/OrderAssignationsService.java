@@ -1,7 +1,9 @@
 package com.hackathon.inditex.services;
 
+import com.hackathon.inditex.Entities.Center;
 import com.hackathon.inditex.Entities.Order;
 import com.hackathon.inditex.dtos.ProcessedOrderDTO;
+import com.hackathon.inditex.repositories.CenterRepository;
 import com.hackathon.inditex.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import java.util.List;
 public class OrderAssignationsService implements IOrderAssignationsService {
 
     public static final String PENDING_STATUS = "PENDING";
+    private final CenterRepository centerRepository;
     private final OrderRepository orderRepository;
 
     @Override
@@ -23,7 +26,12 @@ public class OrderAssignationsService implements IOrderAssignationsService {
         List<ProcessedOrderDTO> listProcessedOrdersDTO = new ArrayList<>();
 
         for (Order order: ordersPending) {
+
             ProcessedOrderDTO processedOrderDTO = new ProcessedOrderDTO();
+
+            String sizeOrder = order.getSize();
+
+            List<Center> listCenters = centerRepository.findByCapacity(sizeOrder);
 
             processedOrderDTO.setDistance(null);
             processedOrderDTO.setOrderId(order.getId());
