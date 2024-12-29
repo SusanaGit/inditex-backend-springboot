@@ -2,7 +2,7 @@ package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.Entities.Center;
 import com.hackathon.inditex.Entities.Order;
-import com.hackathon.inditex.constants.MessageConstants;
+import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.ProcessedOrderDTO;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
 import com.hackathon.inditex.repositories.CenterRepository;
@@ -94,7 +94,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
         }
 
         if (bestCenter == null) {
-            throw new CenterNotFoundException(MessageConstants.CENTER_NOT_FOUND);
+            throw new CenterNotFoundException(ExceptionMessageConstants.CENTER_NOT_FOUND);
         }
 
         assignCenterToTheOrder(order, bestCenter.getName());
