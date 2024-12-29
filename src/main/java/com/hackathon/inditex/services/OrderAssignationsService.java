@@ -1,6 +1,7 @@
 package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.Entities.Center;
+import com.hackathon.inditex.Entities.Coordinates;
 import com.hackathon.inditex.Entities.Order;
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.ProcessedOrderDTO;
@@ -72,6 +73,8 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
     }
 
+
+
     private double obtainTheBestDistance(List<Center> availableCenters, Order order) {
 
         Center bestCenter = null;
@@ -118,25 +121,27 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
     private double obtainDistanceBetweenCenterAndOrder(Center center, Order order) {
 
-        double latitudeCenter = center.getCoordinates().getLatitude();
-        double latitudeOrder = order.getCoordinates().getLatitude();
-
-        double longitudeCenter = center.getCoordinates().getLongitude();
-        double longitudeOrder = order.getCoordinates().getLongitude();
-
         final int EARTH_RADIUS = 6371;
 
-        double latitudeBetweenCenterAndOrderRadians = Math.toRadians(latitudeOrder - latitudeCenter);
-        double longitudeBetweenCenterAndOrderRadians = Math.toRadians(longitudeCenter - longitudeOrder);
+        double latitudeDifferenceRadians = calculateLatitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
+        double longitudeDifferenceRadians = calculateLongitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
 
-        double a = Math.sin(latitudeBetweenCenterAndOrderRadians / 2) * Math.sin(latitudeBetweenCenterAndOrderRadians / 2) +
-                Math.cos(Math.toRadians(latitudeCenter)) * Math.cos(Math.toRadians(latitudeOrder)) *
-                        Math.sin(longitudeBetweenCenterAndOrderRadians / 2) * Math.sin(longitudeBetweenCenterAndOrderRadians / 2);
+        double a = Math.sin(latitudeDifferenceRadians / 2) * Math.sin(latitudeDifferenceRadians / 2) +
+                Math.cos(Math.toRadians(center.getCoordinates().getLatitude())) * Math.cos(Math.toRadians(order.getCoordinates().getLatitude())) *
+                        Math.sin(longitudeDifferenceRadians / 2) * Math.sin(longitudeDifferenceRadians / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c;
 
+    }
+
+    private double calculateLatitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
+        return Math.toRadians(orderCoordinates.getLongitude() - centerCoordinates.getLongitude());
+    }
+
+    private double calculateLongitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
+        return Math.toRadians(centerCoordinates.getLongitude() - orderCoordinates.getLongitude());
     }
 
     private List<Order> obtainListOrdersPending() {
