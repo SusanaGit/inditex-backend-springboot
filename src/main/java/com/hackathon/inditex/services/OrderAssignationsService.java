@@ -42,8 +42,6 @@ public class OrderAssignationsService implements IOrderAssignationsService {
             if (listCentersByCapacity.isEmpty()) {
 
                 processedOrderDTO.setMessage(NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE);
-                processedOrderDTO.setDistance(null);
-                processedOrderDTO.setAssignedLogisticsCenter(null);
 
             } else {
 
@@ -52,8 +50,6 @@ public class OrderAssignationsService implements IOrderAssignationsService {
                 if (availableCenters.isEmpty()) {
 
                     processedOrderDTO.setMessage(ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY);
-                    processedOrderDTO.setDistance(null);
-                    processedOrderDTO.setAssignedLogisticsCenter(null);
 
                 } else {
 
