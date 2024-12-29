@@ -2,6 +2,7 @@ package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.Entities.Center;
 import com.hackathon.inditex.Entities.Order;
+import com.hackathon.inditex.constants.MessageConstants;
 import com.hackathon.inditex.dtos.ProcessedOrderDTO;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
 import com.hackathon.inditex.repositories.CenterRepository;
@@ -16,7 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderAssignationsService implements IOrderAssignationsService {
 
+    public static final String ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY = "All centers are at maximum capacity.";
+    public static final String NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE = "No available centers support the order type.";
     public static final String PENDING_STATUS = "PENDING";
+    public static final String ASSIGNED_STATUS = "ASSIGNED";
+
     private final CenterRepository centerRepository;
     private final OrderRepository orderRepository;
 
@@ -26,7 +31,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
         List<Order> ordersPending = obtainListOrdersPending();
         List<ProcessedOrderDTO> listProcessedOrdersDTO = new ArrayList<>();
 
-        for (Order order: ordersPending) {
+        for (Order order : ordersPending) {
 
             ProcessedOrderDTO processedOrderDTO = new ProcessedOrderDTO();
 
@@ -36,7 +41,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
             if (listCentersByCapacity.isEmpty()) {
 
-                processedOrderDTO.setMessage("No available centers support the order type.");
+                processedOrderDTO.setMessage(NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE);
                 processedOrderDTO.setDistance(null);
                 processedOrderDTO.setAssignedLogisticsCenter(null);
 
@@ -46,7 +51,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
                 if (availableCenters.isEmpty()) {
 
-                    processedOrderDTO.setMessage("All centers are at maximum capacity.");
+                    processedOrderDTO.setMessage(ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY);
                     processedOrderDTO.setDistance(null);
                     processedOrderDTO.setAssignedLogisticsCenter(null);
 
@@ -89,7 +94,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
         }
 
         if (bestCenter == null) {
-            throw new CenterNotFoundException("Error: Center not found.");
+            throw new CenterNotFoundException(MessageConstants.CENTER_NOT_FOUND);
         }
 
         assignCenterToTheOrder(order, bestCenter.getName());
@@ -109,7 +114,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
         order.setAssignedCenter(nameBestCenter);
 
-        order.setStatus("ASSIGNED");
+        order.setStatus(ASSIGNED_STATUS);
 
         orderRepository.save(order);
 
@@ -141,5 +146,4 @@ public class OrderAssignationsService implements IOrderAssignationsService {
     private List<Order> obtainListOrdersPending() {
         return orderRepository.findByStatus(PENDING_STATUS);
     }
-
 }
