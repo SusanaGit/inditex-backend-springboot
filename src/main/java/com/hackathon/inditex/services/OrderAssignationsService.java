@@ -41,7 +41,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
             } else {
 
-                List<Center> availableCenters = centerRepository.findAvailableCenters(listCentersByCapacity);
+                List<Center> availableCenters = centerRepository.findAvailableCenters(sizeOrder);
 
                 if (availableCenters.isEmpty()) {
 
