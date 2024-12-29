@@ -9,8 +9,7 @@ import java.util.List;
 
 public interface CenterRepository extends JpaRepository<Center, Long> {
 
-    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END " +
-            "FROM Center c WHERE c.coordinates.latitude = :latitude AND c.coordinates.longitude = :longitude")
+    @Query("SELECT CASE WHEN COUNT(center) > 0 THEN true ELSE false END FROM Center center WHERE center.coordinates.latitude = :latitude AND center.coordinates.longitude = :longitude")
     boolean existsByCoordinatesLatitudeAndCoordinatesLongitude(@Param("latitude") Double latitude,
                                                                @Param("longitude") Double longitude);
 
