@@ -126,14 +126,24 @@ public class OrderAssignationsService implements IOrderAssignationsService {
         double latitudeDifferenceRadians = calculateLatitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
         double longitudeDifferenceRadians = calculateLongitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
 
-        double a = Math.sin(latitudeDifferenceRadians / 2) * Math.sin(latitudeDifferenceRadians / 2) +
-                Math.cos(Math.toRadians(center.getCoordinates().getLatitude())) * Math.cos(Math.toRadians(order.getCoordinates().getLatitude())) *
-                        Math.sin(longitudeDifferenceRadians / 2) * Math.sin(longitudeDifferenceRadians / 2);
+        double a = calculateHaversineVariable(latitudeDifferenceRadians, longitudeDifferenceRadians, center.getCoordinates(), order.getCoordinates());
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c;
 
+    }
+
+    private double calculateHaversineVariable(
+            double latitudeDifferenceRadians,
+            double longitudeDifferenceRadians,
+            Coordinates centerCoordinates,
+            Coordinates orderCoordinates
+    ) {
+        return Math.sin(latitudeDifferenceRadians / 2) * Math.sin(latitudeDifferenceRadians / 2) +
+                Math.cos(Math.toRadians(centerCoordinates.getLatitude())) *
+                Math.cos(Math.toRadians(orderCoordinates.getLatitude())) *
+                Math.sin(longitudeDifferenceRadians / 2) * Math.sin(longitudeDifferenceRadians / 2);
     }
 
     private double calculateLatitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
