@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +42,9 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
             } else {
 
-                List<Center> availableCenters = centerRepository.findAvailableCenters(sizeOrder);
+                List<Center> availableCenters = listCentersByCapacity.stream()
+                        .filter(center -> center.getCurrentLoad() < center.getMaxCapacity())
+                        .toList();
 
                 if (availableCenters.isEmpty()) {
 

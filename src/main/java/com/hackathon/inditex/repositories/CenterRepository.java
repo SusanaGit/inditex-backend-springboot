@@ -14,7 +14,9 @@ public interface CenterRepository extends JpaRepository<Center, Long> {
     @Query("SELECT center FROM Center center WHERE center.capacity LIKE %:capacity%")
     List<Center> findByCapacity(@Param("capacity") String capacity);
 
-    @Query("SELECT center FROM Center center WHERE center.capacity LIKE %:capacity% AND center.currentLoad < center.maxCapacity")
-    List<Center> findAvailableCenters(@Param("capacity") String capacity);
+    /*@Query("SELECT center FROM Center center WHERE center IN :listCenters AND center.currentLoad < center.maxCapacity")
+    List<Center> findAvailableCenters(@Param("listCenters") List<Center> listCenters);*/
+
+
 
 }
