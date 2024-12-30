@@ -1,6 +1,7 @@
 package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.Entities.Center;
+import com.hackathon.inditex.Entities.Coordinates;
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 
 @Service
@@ -75,21 +77,11 @@ public class CenterService implements ICenterService {
 
     private void updateCenterValues(Center currentCenter, CenterDTO updatedCenterDTO) {
 
-        if (updatedCenterDTO.getName() != null) {
-            currentCenter.setName(updatedCenterDTO.getName());
-        }
-
-        if (updatedCenterDTO.getCapacity() != null) {
-            currentCenter.setCapacity(updatedCenterDTO.getCapacity());
-        }
-
-        if (updatedCenterDTO.getStatus() != null) {
-            currentCenter.setStatus(updatedCenterDTO.getStatus());
-        }
-
-        if (updatedCenterDTO.getMaxCapacity() != null) {
-            currentCenter.setMaxCapacity(updatedCenterDTO.getMaxCapacity());
-        }
+        updateIfNotNull(updatedCenterDTO.getName(), currentCenter::setName);
+        updateIfNotNull(updatedCenterDTO.getCapacity(), currentCenter::setCapacity);
+        updateIfNotNull(updatedCenterDTO.getStatus(), currentCenter::setStatus);
+        updateIfNotNull(updatedCenterDTO.getMaxCapacity(), currentCenter::setMaxCapacity);
+        updateIfNotNull(updatedCenterDTO.getCurrentLoad(), currentCenter::setCurrentLoad);
 
         updateCurrentLoadCenter(currentCenter, updatedCenterDTO);
 
@@ -110,13 +102,19 @@ public class CenterService implements ICenterService {
     private void updateCoordinatesCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
         if (updatedCenterDTO.getCoordinates() != null) {
 
-            if (updatedCenterDTO.getCoordinates().getLongitude() != null) {
-                currentCenter.getCoordinates().setLongitude(updatedCenterDTO.getCoordinates().getLongitude());
-            }
+            Coordinates updatedCoordinates = updatedCenterDTO.getCoordinates();
+            Coordinates currentCoordinates = currentCenter.getCoordinates();
 
-            if (updatedCenterDTO.getCoordinates().getLatitude() != null) {
-                currentCenter.getCoordinates().setLatitude(updatedCenterDTO.getCoordinates().getLatitude());
-            }
+            updateIfNotNull(updatedCoordinates.getLongitude(), currentCoordinates::setLongitude);
+            updateIfNotNull(updatedCoordinates.getLatitude(), currentCoordinates::setLatitude);
+
         }
     }
+
+    private <T> void updateIfNotNull(T value, Consumer<T> setter) {
+        if (value != null) {
+            setter.accept(value);
+        }
+    }
+
 }
