@@ -91,11 +91,15 @@ public class CenterService implements ICenterService {
     private void updateCurrentLoadCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
         if (updatedCenterDTO.getCurrentLoad() != null) {
 
-            if (updatedCenterDTO.getCurrentLoad() > currentCenter.getMaxCapacity()) {
-                throw new CurrentLoadMoreThanMaxCapacityException(ExceptionMessageConstants.CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
-            }
+            validateCurrentLoad(updatedCenterDTO.getCurrentLoad(), currentCenter.getMaxCapacity());
 
             currentCenter.setCurrentLoad(updatedCenterDTO.getCurrentLoad());
+        }
+    }
+
+    private void validateCurrentLoad(Integer currentLoad, Integer maxCapacity) {
+        if (currentLoad > maxCapacity) {
+            throw new CurrentLoadMoreThanMaxCapacityException(ExceptionMessageConstants.CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
         }
     }
 
