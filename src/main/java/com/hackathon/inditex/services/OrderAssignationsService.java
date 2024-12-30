@@ -140,10 +140,20 @@ public class OrderAssignationsService implements IOrderAssignationsService {
             Coordinates centerCoordinates,
             Coordinates orderCoordinates
     ) {
-        return Math.sin(latitudeDifferenceRadians / 2) * Math.sin(latitudeDifferenceRadians / 2) +
-                Math.cos(Math.toRadians(centerCoordinates.getLatitude())) *
-                Math.cos(Math.toRadians(orderCoordinates.getLatitude())) *
-                Math.sin(longitudeDifferenceRadians / 2) * Math.sin(longitudeDifferenceRadians / 2);
+        double sinLatitude = calculateSinSquare(latitudeDifferenceRadians / 2);
+        double sinLongitude = calculateSinSquare(longitudeDifferenceRadians / 2);
+        double cosCenterLatitude = calculateCosine(centerCoordinates.getLatitude());
+        double cosOrderLatitude = calculateCosine(orderCoordinates.getLatitude());
+
+        return sinLatitude + cosCenterLatitude * cosOrderLatitude * sinLongitude;
+    }
+
+    private double calculateSinSquare(double angle) {
+        return Math.sin(angle) * Math.sin(angle);
+    }
+
+    private double calculateCosine(double degree) {
+        return Math.cos(Math.toRadians(degree));
     }
 
     private double calculateLatitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
