@@ -77,15 +77,18 @@ public class CenterService implements ICenterService {
 
     private void updateCenterValues(Center currentCenter, CenterDTO updatedCenterDTO) {
 
-        updateIfNotNull(updatedCenterDTO.getName(), currentCenter::setName);
-        updateIfNotNull(updatedCenterDTO.getCapacity(), currentCenter::setCapacity);
-        updateIfNotNull(updatedCenterDTO.getStatus(), currentCenter::setStatus);
-        updateIfNotNull(updatedCenterDTO.getMaxCapacity(), currentCenter::setMaxCapacity);
-        updateIfNotNull(updatedCenterDTO.getCurrentLoad(), currentCenter::setCurrentLoad);
+        updateMainValuesCenter(currentCenter, updatedCenterDTO);
 
         updateCurrentLoadCenter(currentCenter, updatedCenterDTO);
 
         updateCoordinatesCenter(currentCenter, updatedCenterDTO);
+    }
+
+    private void updateMainValuesCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
+        updateIfNotNull(updatedCenterDTO.getName(), currentCenter::setName);
+        updateIfNotNull(updatedCenterDTO.getCapacity(), currentCenter::setCapacity);
+        updateIfNotNull(updatedCenterDTO.getStatus(), currentCenter::setStatus);
+        updateIfNotNull(updatedCenterDTO.getMaxCapacity(), currentCenter::setMaxCapacity);
     }
 
     private void updateCurrentLoadCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
