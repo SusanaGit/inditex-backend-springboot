@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 
@@ -60,11 +59,19 @@ public class CenterService implements ICenterService {
 
     private void validateNewCenter(Center newCenter) {
 
+        validateCoordinatesNewCenter(newCenter);
+
+        validateCurrentLoadNewCenter(newCenter);
+    }
+
+    private void validateCoordinatesNewCenter(Center newCenter) {
         if (centerRepository.existsByCoordinatesLatitudeAndCoordinatesLongitude(
                 newCenter.getCoordinates().getLatitude(), newCenter.getCoordinates().getLongitude())) {
             throw new CoordinatesExistException(ExceptionMessageConstants.THERE_IS_ALREADY_A_LOGISTICS_CENTER_IN_THAT_POSITION);
         }
+    }
 
+    private void validateCurrentLoadNewCenter(Center newCenter) {
         if (newCenter.getCurrentLoad() > newCenter.getMaxCapacity()) {
             throw new CurrentLoadMoreThanMaxCapacityException(ExceptionMessageConstants.CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
         }
