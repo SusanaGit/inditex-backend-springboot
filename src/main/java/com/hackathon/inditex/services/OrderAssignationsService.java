@@ -54,7 +54,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
                 } else {
 
-                    double bestDistance = obtainTheBestDistance(availableCenters, order);
+                    double bestDistance = assignBestCenter(order, availableCenters);
 
                     processedOrderDTO.setDistance(bestDistance);
                     processedOrderDTO.setAssignedLogisticsCenter(order.getAssignedCenter());
@@ -73,35 +73,20 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
     }
 
-
-
-    private double obtainTheBestDistance(List<Center> availableCenters, Order order) {
-
-        Center bestCenter = null;
-
-        double bestDistance = Double.MAX_VALUE;
-
-        for (Center center : availableCenters) {
-
-            double distanceBetweenCenterAndOrder = obtainDistanceBetweenCenterAndOrder(center, order);
-
-            if (distanceBetweenCenterAndOrder < bestDistance) {
-                bestDistance = distanceBetweenCenterAndOrder;
-                bestCenter = center;
-            }
-
-        }
-
-        if (bestCenter == null) {
-            throw new CenterNotFoundException(ExceptionMessageConstants.CENTER_NOT_FOUND);
-        }
-
+    private double assignBestCenter(Order order, List<Center> availableCenters) {
+        Center bestCenter = findBestCenter(order, availableCenters);
         assignCenterToTheOrder(order, bestCenter.getName());
-
         incrementCurrentLoadCenter(bestCenter);
+        return obtainDistanceBetweenCenterAndOrder(bestCenter, order);
+    }
 
-        return bestDistance;
-
+    private Center findBestCenter(Order order, List<Center> availableCenters) {
+        return availableCenters.stream()
+                .min((center1, center2) -> Double.compare(
+                        obtainDistanceBetweenCenterAndOrder(center1, order),
+                        obtainDistanceBetweenCenterAndOrder(center2, order)
+                ))
+                .orElseThrow(() -> new CenterNotFoundException(ExceptionMessageConstants.CENTER_NOT_FOUND));
     }
 
     private void incrementCurrentLoadCenter(Center bestCenter) {
