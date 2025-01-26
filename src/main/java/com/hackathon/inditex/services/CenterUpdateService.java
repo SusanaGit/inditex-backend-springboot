@@ -16,31 +16,36 @@ public class CenterUpdateService {
 
     public void updateCenterValues(Center currentCenter, CenterDTO updatedCenterDTO) {
         updateMainValuesCenter(currentCenter, updatedCenterDTO);
-        updateCurrentLoadCenter(currentCenter, updatedCenterDTO);
-        updateCoordinatesCenter(currentCenter, updatedCenterDTO);
+        updateCurrentLoadCenter(currentCenter, updatedCenterDTO.getCurrentLoad(), currentCenter.getMaxCapacity());
+        updateCoordinatesCenter(currentCenter, updatedCenterDTO.getCoordinates());
     }
 
-    public void updateCoordinatesCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
-        if (updatedCenterDTO.getCoordinates() != null) {
-            Coordinates updatedCoordinates = updatedCenterDTO.getCoordinates();
-            Coordinates currentCoordinates = currentCenter.getCoordinates();
-            Utils.updateIfNotNull(updatedCoordinates.getLongitude(), currentCoordinates::setLongitude);
-            Utils.updateIfNotNull(updatedCoordinates.getLatitude(), currentCoordinates::setLatitude);
+    private void updateMainValuesCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
+        Utils.ifNotNull(updatedCenterDTO.getName(), currentCenter::setName);
+        Utils.ifNotNull(updatedCenterDTO.getCapacity(), currentCenter::setCapacity);
+        Utils.ifNotNull(updatedCenterDTO.getStatus(), currentCenter::setStatus);
+        Utils.ifNotNull(updatedCenterDTO.getMaxCapacity(), currentCenter::setMaxCapacity);
+    }
+
+    private void updateCurrentLoadCenter(Center currentCenter, Integer newLoad, Integer maxCapacity) {
+        if (newLoad != null) {
+            validateAndSetLoad(currentCenter, newLoad, maxCapacity);
         }
     }
 
-    public void updateCurrentLoadCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
-        if (updatedCenterDTO.getCurrentLoad() != null) {
-            centerLoadValidator.validateCurrentLoad(updatedCenterDTO.getCurrentLoad(), currentCenter.getMaxCapacity());
-            currentCenter.setCurrentLoad(updatedCenterDTO.getCurrentLoad());
+    private void validateAndSetLoad(Center currentCenter, Integer newLoad, Integer maxCapacity) {
+        centerLoadValidator.validateCurrentLoad(newLoad, maxCapacity);
+        currentCenter.setCurrentLoad(newLoad);
+    }
+
+    private void updateCoordinatesCenter(Center currentCenter, Coordinates updatedCoordinates) {
+        if (updatedCoordinates != null) {
+            updateCoordinateValues(currentCenter.getCoordinates(), updatedCoordinates);
         }
     }
 
-    public void updateMainValuesCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
-        Utils.updateIfNotNull(updatedCenterDTO.getName(), currentCenter::setName);
-        Utils.updateIfNotNull(updatedCenterDTO.getCapacity(), currentCenter::setCapacity);
-        Utils.updateIfNotNull(updatedCenterDTO.getStatus(), currentCenter::setStatus);
-        Utils.updateIfNotNull(updatedCenterDTO.getMaxCapacity(), currentCenter::setMaxCapacity);
+    private void updateCoordinateValues(Coordinates currentCoordinates, Coordinates updatedCoordinates) {
+        Utils.ifNotNull(updatedCoordinates.getLongitude(), currentCoordinates::setLongitude);
+        Utils.ifNotNull(updatedCoordinates.getLatitude(), currentCoordinates::setLatitude);
     }
-
 }
