@@ -1,13 +1,13 @@
 package com.hackathon.inditex.services;
 
-import com.hackathon.inditex.entities.Center;
-import com.hackathon.inditex.entities.Coordinates;
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.CenterDTO;
+import com.hackathon.inditex.entities.Center;
+import com.hackathon.inditex.entities.Coordinates;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
-import com.hackathon.inditex.exceptions.CoordinatesExistException;
 import com.hackathon.inditex.exceptions.CurrentLoadMoreThanMaxCapacityException;
 import com.hackathon.inditex.repositories.CenterRepository;
+import com.hackathon.inditex.validators.CenterValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +23,12 @@ public class CenterService implements ICenterService {
     public static final String LOGISTICS_CENTER_CREATED_SUCCESSFULLY = "Logistics center created successfully.";
     public static final String LOGISTICS_CENTER_DELETED_SUCCESSFULLY = "Logistics center deleted successfully.";
 
-
     private final CenterRepository centerRepository;
+    private final CenterValidator centerValidator;
 
     @Override
     public String saveCenter(Center newCenter) {
-        validateNewCenter(newCenter);
+        centerValidator.validateNewCenter(newCenter);
         centerRepository.save(newCenter);
         return LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
     }
@@ -57,25 +57,7 @@ public class CenterService implements ICenterService {
         return LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
     }
 
-    private void validateNewCenter(Center newCenter) {
 
-        validateCoordinatesNewCenter(newCenter);
-
-        validateCurrentLoadNewCenter(newCenter);
-    }
-
-    private void validateCoordinatesNewCenter(Center newCenter) {
-        if (centerRepository.existsByCoordinatesLatitudeAndCoordinatesLongitude(
-                newCenter.getCoordinates().getLatitude(), newCenter.getCoordinates().getLongitude())) {
-            throw new CoordinatesExistException(ExceptionMessageConstants.THERE_IS_ALREADY_A_LOGISTICS_CENTER_IN_THAT_POSITION);
-        }
-    }
-
-    private void validateCurrentLoadNewCenter(Center newCenter) {
-        if (newCenter.getCurrentLoad() > newCenter.getMaxCapacity()) {
-            throw new CurrentLoadMoreThanMaxCapacityException(ExceptionMessageConstants.CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
-        }
-    }
 
     private Center obtainCenterById(Long idCenter) {
         return centerRepository.findById(idCenter)
