@@ -6,7 +6,6 @@ import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.entities.Center;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
 import com.hackathon.inditex.repositories.CenterRepository;
-import com.hackathon.inditex.updates.UpdateCenterValues;
 import com.hackathon.inditex.validators.CenterValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ public class CenterService implements ICenterService {
 
     private final CenterRepository centerRepository;
     private final CenterValidator centerValidator;
-    private final UpdateCenterValues updateCenterValues;
+    private final CenterUpdateService centerUpdateService;
 
     @Override
     public String saveCenter(Center newCenter) {
@@ -36,7 +35,7 @@ public class CenterService implements ICenterService {
     @Override
     public String updateCenter(Long idCenterToUpdate, CenterDTO updatedCenterDTO) {
         Center currentCenter = obtainCenterById(idCenterToUpdate);
-        updateCenterValues.updateCenterValues(currentCenter, updatedCenterDTO);
+        centerUpdateService.updateCenterValues(currentCenter, updatedCenterDTO);
         centerRepository.save(currentCenter);
         return CenterMessageConstants.LOGISTICS_CENTER_UPDATED_SUCCESSFULLY;
 
