@@ -4,7 +4,6 @@ import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.entities.Center;
 import com.hackathon.inditex.entities.Coordinates;
 import com.hackathon.inditex.utils.Utils;
-import com.hackathon.inditex.validators.CenterLoadValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CenterUpdateService {
 
-    private final CenterLoadValidator centerLoadValidator;
+    private final CenterValidatorService centerValidatorService;
 
     public void updateCenterValues(Center currentCenter, CenterDTO updatedCenterDTO) {
         updateMainValuesCenter(currentCenter, updatedCenterDTO);
@@ -32,7 +31,7 @@ public class CenterUpdateService {
     }
 
     private void validateAndSetLoad(Center currentCenter, Integer newLoad, Integer maxCapacity) {
-        centerLoadValidator.validateCurrentLoad(newLoad, maxCapacity);
+        centerValidatorService.validateCurrentLoad(newLoad, maxCapacity);
         currentCenter.setCurrentLoad(newLoad);
     }
 

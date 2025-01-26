@@ -1,4 +1,4 @@
-package com.hackathon.inditex.validators;
+package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.entities.Center;
@@ -6,11 +6,11 @@ import com.hackathon.inditex.exceptions.CoordinatesExistException;
 import com.hackathon.inditex.exceptions.CurrentLoadMoreThanMaxCapacityException;
 import com.hackathon.inditex.repositories.CenterRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class CenterValidator {
+public class CenterValidatorService {
 
     public final CenterRepository centerRepository;
 
@@ -28,6 +28,12 @@ public class CenterValidator {
 
     private void validateCurrentLoadNewCenter(Center newCenter) {
         if (newCenter.getCurrentLoad() > newCenter.getMaxCapacity()) {
+            throw new CurrentLoadMoreThanMaxCapacityException(ExceptionMessageConstants.CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
+        }
+    }
+
+    public void validateCurrentLoad(Integer currentLoad, Integer maxCapacity) {
+        if (currentLoad > maxCapacity) {
             throw new CurrentLoadMoreThanMaxCapacityException(ExceptionMessageConstants.CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
         }
     }
