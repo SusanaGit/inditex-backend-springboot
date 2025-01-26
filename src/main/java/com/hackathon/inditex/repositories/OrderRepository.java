@@ -1,6 +1,6 @@
 package com.hackathon.inditex.repositories;
 
-import com.hackathon.inditex.Entities.Order;
+import com.hackathon.inditex.entities.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

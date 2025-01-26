@@ -1,6 +1,6 @@
 package com.hackathon.inditex.services;
 
-import com.hackathon.inditex.Entities.Order;
+import com.hackathon.inditex.entities.Order;
 
 import java.util.List;
 

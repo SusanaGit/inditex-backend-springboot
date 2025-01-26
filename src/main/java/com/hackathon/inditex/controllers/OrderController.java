@@ -1,6 +1,6 @@
-package com.hackathon.inditex.Controllers;
+package com.hackathon.inditex.controllers;
 
-import com.hackathon.inditex.Entities.Order;
+import com.hackathon.inditex.entities.Order;
 import com.hackathon.inditex.dtos.OrderDTO;
 import com.hackathon.inditex.dtos.ProcessedOrderDTO;
 import com.hackathon.inditex.dtos.ResponseOrderAssignationsDTO;

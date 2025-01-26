@@ -1,7 +1,7 @@
 package com.hackathon.inditex.mappers;
 
-import com.hackathon.inditex.Entities.Coordinates;
-import com.hackathon.inditex.Entities.Order;
+import com.hackathon.inditex.entities.Coordinates;
+import com.hackathon.inditex.entities.Order;
 import com.hackathon.inditex.dtos.OrderDTO;
 import org.springframework.stereotype.Service;
 

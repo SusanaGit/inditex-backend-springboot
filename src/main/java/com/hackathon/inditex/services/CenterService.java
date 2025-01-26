@@ -1,7 +1,7 @@
 package com.hackathon.inditex.services;
 
-import com.hackathon.inditex.Entities.Center;
-import com.hackathon.inditex.Entities.Coordinates;
+import com.hackathon.inditex.entities.Center;
+import com.hackathon.inditex.entities.Coordinates;
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;

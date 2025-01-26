@@ -1,6 +1,6 @@
 package com.hackathon.inditex.services;
 
-import com.hackathon.inditex.Entities.Center;
+import com.hackathon.inditex.entities.Center;
 import com.hackathon.inditex.dtos.CenterDTO;
 
 import java.util.List;
