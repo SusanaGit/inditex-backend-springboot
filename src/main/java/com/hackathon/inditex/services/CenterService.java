@@ -1,5 +1,6 @@
 package com.hackathon.inditex.services;
 
+import com.hackathon.inditex.constants.CenterMessageConstants;
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.entities.Center;
@@ -19,10 +20,6 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class CenterService implements ICenterService {
 
-    public static final String LOGISTICS_CENTER_UPDATED_SUCCESSFULLY = "Logistics center updated successfully.";
-    public static final String LOGISTICS_CENTER_CREATED_SUCCESSFULLY = "Logistics center created successfully.";
-    public static final String LOGISTICS_CENTER_DELETED_SUCCESSFULLY = "Logistics center deleted successfully.";
-
     private final CenterRepository centerRepository;
     private final CenterValidator centerValidator;
 
@@ -30,7 +27,7 @@ public class CenterService implements ICenterService {
     public String saveCenter(Center newCenter) {
         centerValidator.validateNewCenter(newCenter);
         centerRepository.save(newCenter);
-        return LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
+        return CenterMessageConstants.LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
     }
 
     @Override
@@ -47,14 +44,14 @@ public class CenterService implements ICenterService {
 
         centerRepository.save(currentCenter);
 
-        return LOGISTICS_CENTER_UPDATED_SUCCESSFULLY;
+        return CenterMessageConstants.LOGISTICS_CENTER_UPDATED_SUCCESSFULLY;
 
     }
 
     @Override
     public String deleteCenter(Long idCenterToDelete) {
         centerRepository.deleteById(idCenterToDelete);
-        return LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
+        return CenterMessageConstants.LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
     }
 
 
