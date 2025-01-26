@@ -28,9 +28,7 @@ public class CenterUpdateService {
     }
 
     private void updateCurrentLoadCenter(Center currentCenter, Integer newLoad, Integer maxCapacity) {
-        if (newLoad != null) {
-            validateAndSetLoad(currentCenter, newLoad, maxCapacity);
-        }
+        Utils.ifNotNull(newLoad, load -> validateAndSetLoad(currentCenter, load, maxCapacity));
     }
 
     private void validateAndSetLoad(Center currentCenter, Integer newLoad, Integer maxCapacity) {
@@ -39,9 +37,7 @@ public class CenterUpdateService {
     }
 
     private void updateCoordinatesCenter(Center currentCenter, Coordinates updatedCoordinates) {
-        if (updatedCoordinates != null) {
-            updateCoordinateValues(currentCenter.getCoordinates(), updatedCoordinates);
-        }
+        Utils.ifNotNull(updatedCoordinates, coords -> updateCoordinateValues(currentCenter.getCoordinates(), coords));
     }
 
     private void updateCoordinateValues(Coordinates currentCoordinates, Coordinates updatedCoordinates) {
