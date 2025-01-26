@@ -1,10 +1,5 @@
 package com.hackathon.inditex.dtos;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 public class ResponseDTO {
 
     String message = "";
@@ -13,4 +8,11 @@ public class ResponseDTO {
         this.message = message;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
