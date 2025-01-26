@@ -4,17 +4,14 @@ import com.hackathon.inditex.constants.CenterMessageConstants;
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.entities.Center;
-import com.hackathon.inditex.entities.Coordinates;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
 import com.hackathon.inditex.repositories.CenterRepository;
-import com.hackathon.inditex.validators.CenterLoadValidator;
+import com.hackathon.inditex.updates.UpdateCenterValues;
 import com.hackathon.inditex.validators.CenterValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.function.Consumer;
-
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +19,7 @@ public class CenterService implements ICenterService {
 
     private final CenterRepository centerRepository;
     private final CenterValidator centerValidator;
-    private final CenterLoadValidator centerLoadValidator;
+    private final UpdateCenterValues updateCenterValues;
 
     @Override
     public String saveCenter(Center newCenter) {
@@ -39,7 +36,7 @@ public class CenterService implements ICenterService {
     @Override
     public String updateCenter(Long idCenterToUpdate, CenterDTO updatedCenterDTO) {
         Center currentCenter = obtainCenterById(idCenterToUpdate);
-        updateCenterValues(currentCenter, updatedCenterDTO);
+        updateCenterValues.updateCenterValues(currentCenter, updatedCenterDTO);
         centerRepository.save(currentCenter);
         return CenterMessageConstants.LOGISTICS_CENTER_UPDATED_SUCCESSFULLY;
 
@@ -51,56 +48,8 @@ public class CenterService implements ICenterService {
         return CenterMessageConstants.LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
     }
 
-
-
     private Center obtainCenterById(Long idCenter) {
         return centerRepository.findById(idCenter)
                 .orElseThrow(() -> new CenterNotFoundException(ExceptionMessageConstants.CENTER_NOT_FOUND));
     }
-
-    private void updateCenterValues(Center currentCenter, CenterDTO updatedCenterDTO) {
-
-        updateMainValuesCenter(currentCenter, updatedCenterDTO);
-
-        updateCurrentLoadCenter(currentCenter, updatedCenterDTO);
-
-        updateCoordinatesCenter(currentCenter, updatedCenterDTO);
-    }
-
-    private void updateMainValuesCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
-        updateIfNotNull(updatedCenterDTO.getName(), currentCenter::setName);
-        updateIfNotNull(updatedCenterDTO.getCapacity(), currentCenter::setCapacity);
-        updateIfNotNull(updatedCenterDTO.getStatus(), currentCenter::setStatus);
-        updateIfNotNull(updatedCenterDTO.getMaxCapacity(), currentCenter::setMaxCapacity);
-    }
-
-    private void updateCurrentLoadCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
-        if (updatedCenterDTO.getCurrentLoad() != null) {
-
-            centerLoadValidator.validateCurrentLoad(updatedCenterDTO.getCurrentLoad(), currentCenter.getMaxCapacity());
-
-            currentCenter.setCurrentLoad(updatedCenterDTO.getCurrentLoad());
-        }
-    }
-
-
-
-    private void updateCoordinatesCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
-        if (updatedCenterDTO.getCoordinates() != null) {
-
-            Coordinates updatedCoordinates = updatedCenterDTO.getCoordinates();
-            Coordinates currentCoordinates = currentCenter.getCoordinates();
-
-            updateIfNotNull(updatedCoordinates.getLongitude(), currentCoordinates::setLongitude);
-            updateIfNotNull(updatedCoordinates.getLatitude(), currentCoordinates::setLatitude);
-
-        }
-    }
-
-    private <T> void updateIfNotNull(T value, Consumer<T> setter) {
-        if (value != null) {
-            setter.accept(value);
-        }
-    }
-
 }
