@@ -1,7 +1,6 @@
 package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.Entities.Center;
-import com.hackathon.inditex.Entities.Coordinates;
 import com.hackathon.inditex.Entities.Order;
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.ProcessedOrderDTO;
@@ -25,11 +24,12 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
     private final CenterRepository centerRepository;
     private final OrderRepository orderRepository;
+    private final HaversineService haversineService;
 
     @Override
     public List<ProcessedOrderDTO> assignCenterToOrders() {
 
-        List<Order> ordersPending = obtainListOrdersPending();
+        List<Order> ordersPending = orderRepository.findByStatus(OrderAssignationsService.PENDING_STATUS);
         List<ProcessedOrderDTO> listProcessedOrdersDTO = new ArrayList<>();
 
         for (Order order : ordersPending) {
@@ -108,48 +108,13 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
         final int EARTH_RADIUS = 6371;
 
-        double latitudeDifferenceRadians = calculateLatitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
-        double longitudeDifferenceRadians = calculateLongitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
+        double latitudeDifferenceRadians = haversineService.calculateLatitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
+        double longitudeDifferenceRadians = haversineService.calculateLongitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
 
-        double a = calculateHaversineVariable(latitudeDifferenceRadians, longitudeDifferenceRadians, center.getCoordinates(), order.getCoordinates());
+        double a = haversineService.calculateHaversineVariable(latitudeDifferenceRadians, longitudeDifferenceRadians, center.getCoordinates(), order.getCoordinates());
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c;
-
-    }
-
-    private double calculateHaversineVariable(
-            double latitudeDifferenceRadians,
-            double longitudeDifferenceRadians,
-            Coordinates centerCoordinates,
-            Coordinates orderCoordinates
-    ) {
-        double sinLatitude = calculateSinSquare(latitudeDifferenceRadians / 2);
-        double sinLongitude = calculateSinSquare(longitudeDifferenceRadians / 2);
-        double cosCenterLatitude = calculateCosine(centerCoordinates.getLatitude());
-        double cosOrderLatitude = calculateCosine(orderCoordinates.getLatitude());
-
-        return sinLatitude + cosCenterLatitude * cosOrderLatitude * sinLongitude;
-    }
-
-    private double calculateSinSquare(double angle) {
-        return Math.sin(angle) * Math.sin(angle);
-    }
-
-    private double calculateCosine(double degree) {
-        return Math.cos(Math.toRadians(degree));
-    }
-
-    private double calculateLatitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
-        return Math.toRadians(orderCoordinates.getLongitude() - centerCoordinates.getLongitude());
-    }
-
-    private double calculateLongitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
-        return Math.toRadians(centerCoordinates.getLongitude() - orderCoordinates.getLongitude());
-    }
-
-    private List<Order> obtainListOrdersPending() {
-        return orderRepository.findByStatus(PENDING_STATUS);
     }
 }

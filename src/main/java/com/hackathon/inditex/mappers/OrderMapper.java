@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderMapper implements IOrderMapper {
 
+    public static final String PENDING_STATUS = "PENDING";
+
     @Override
     public Order orderDTOtoOrder(OrderDTO newOrderDTO) {
 
@@ -16,7 +18,7 @@ public class OrderMapper implements IOrderMapper {
         newOrder.setCustomerId(newOrderDTO.getCustomerId());
         newOrder.setSize(newOrderDTO.getSize());
 
-        newOrder.setStatus("PENDING");
+        newOrder.setStatus(PENDING_STATUS);
         newOrder.setAssignedCenter(null);
 
         Coordinates newCoordinatesOrder = new Coordinates();
