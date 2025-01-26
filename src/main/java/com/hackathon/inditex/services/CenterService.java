@@ -6,8 +6,8 @@ import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.entities.Center;
 import com.hackathon.inditex.entities.Coordinates;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
-import com.hackathon.inditex.exceptions.CurrentLoadMoreThanMaxCapacityException;
 import com.hackathon.inditex.repositories.CenterRepository;
+import com.hackathon.inditex.validators.CenterLoadValidator;
 import com.hackathon.inditex.validators.CenterValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,7 @@ public class CenterService implements ICenterService {
 
     private final CenterRepository centerRepository;
     private final CenterValidator centerValidator;
+    private final CenterLoadValidator centerLoadValidator;
 
     @Override
     public String saveCenter(Center newCenter) {
@@ -37,13 +38,9 @@ public class CenterService implements ICenterService {
 
     @Override
     public String updateCenter(Long idCenterToUpdate, CenterDTO updatedCenterDTO) {
-
         Center currentCenter = obtainCenterById(idCenterToUpdate);
-
         updateCenterValues(currentCenter, updatedCenterDTO);
-
         centerRepository.save(currentCenter);
-
         return CenterMessageConstants.LOGISTICS_CENTER_UPDATED_SUCCESSFULLY;
 
     }
@@ -80,17 +77,13 @@ public class CenterService implements ICenterService {
     private void updateCurrentLoadCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
         if (updatedCenterDTO.getCurrentLoad() != null) {
 
-            validateCurrentLoad(updatedCenterDTO.getCurrentLoad(), currentCenter.getMaxCapacity());
+            centerLoadValidator.validateCurrentLoad(updatedCenterDTO.getCurrentLoad(), currentCenter.getMaxCapacity());
 
             currentCenter.setCurrentLoad(updatedCenterDTO.getCurrentLoad());
         }
     }
 
-    private void validateCurrentLoad(Integer currentLoad, Integer maxCapacity) {
-        if (currentLoad > maxCapacity) {
-            throw new CurrentLoadMoreThanMaxCapacityException(ExceptionMessageConstants.CURRENT_LOAD_CANNOT_EXCEED_MAX_CAPACITY);
-        }
-    }
+
 
     private void updateCoordinatesCenter(Center currentCenter, CenterDTO updatedCenterDTO) {
         if (updatedCenterDTO.getCoordinates() != null) {
