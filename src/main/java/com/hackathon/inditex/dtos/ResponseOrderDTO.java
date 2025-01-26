@@ -3,8 +3,10 @@ package com.hackathon.inditex.dtos;
 import com.hackathon.inditex.entities.Coordinates;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class ResponseOrderDTO {
 
