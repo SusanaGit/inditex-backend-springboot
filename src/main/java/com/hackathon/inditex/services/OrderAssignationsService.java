@@ -1,9 +1,10 @@
 package com.hackathon.inditex.services;
 
+import com.hackathon.inditex.constants.ExceptionMessageConstants;
+import com.hackathon.inditex.constants.OrderAssignationsConstants;
+import com.hackathon.inditex.dtos.ProcessedOrderDTO;
 import com.hackathon.inditex.entities.Center;
 import com.hackathon.inditex.entities.Order;
-import com.hackathon.inditex.constants.ExceptionMessageConstants;
-import com.hackathon.inditex.dtos.ProcessedOrderDTO;
 import com.hackathon.inditex.exceptions.CenterNotFoundException;
 import com.hackathon.inditex.repositories.CenterRepository;
 import com.hackathon.inditex.repositories.OrderRepository;
@@ -17,11 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderAssignationsService implements IOrderAssignationsService {
 
-    public static final String ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY = "All centers are at maximum capacity.";
-    public static final String NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE = "No available centers support the order type.";
-    public static final String PENDING_STATUS = "PENDING";
-    public static final String ASSIGNED_STATUS = "ASSIGNED";
-
     private final CenterRepository centerRepository;
     private final OrderRepository orderRepository;
     private final HaversineService haversineService;
@@ -29,7 +25,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
     @Override
     public List<ProcessedOrderDTO> assignCenterToOrders() {
 
-        List<Order> ordersPending = orderRepository.findByStatus(OrderAssignationsService.PENDING_STATUS);
+        List<Order> ordersPending = orderRepository.findByStatus(OrderAssignationsConstants.PENDING_STATUS);
         List<ProcessedOrderDTO> listProcessedOrdersDTO = new ArrayList<>();
 
         for (Order order : ordersPending) {
@@ -43,7 +39,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
             if (listCentersByCapacity.isEmpty()) {
 
 
-                processedOrderDTO.setMessage(NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE);
+                processedOrderDTO.setMessage(OrderAssignationsConstants.NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE);
 
             } else {
 
@@ -51,7 +47,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
                 if (availableCenters.isEmpty()) {
 
-                    processedOrderDTO.setMessage(ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY);
+                    processedOrderDTO.setMessage(OrderAssignationsConstants.ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY);
 
                 } else {
 
@@ -99,7 +95,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
         order.setAssignedCenter(nameBestCenter);
 
-        order.setStatus(ASSIGNED_STATUS);
+        order.setStatus(OrderAssignationsConstants.ASSIGNED_STATUS);
 
         orderRepository.save(order);
 
