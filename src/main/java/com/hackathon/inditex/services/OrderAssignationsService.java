@@ -1,10 +1,8 @@
 package com.hackathon.inditex.services;
 
-import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.ProcessedOrderDTO;
 import com.hackathon.inditex.entities.Center;
 import com.hackathon.inditex.entities.Order;
-import com.hackathon.inditex.exceptions.CenterNotFoundException;
 import com.hackathon.inditex.repositories.CenterRepository;
 import com.hackathon.inditex.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +18,10 @@ public class OrderAssignationsService implements IOrderAssignationsService {
     public static final String ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY = "All centers are at maximum capacity.";
     public static final String NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE = "No available centers support the order type.";
     public static final String PENDING_STATUS = "PENDING";
-    public static final String ASSIGNED_STATUS = "ASSIGNED";
 
     private final CenterRepository centerRepository;
     private final OrderRepository orderRepository;
-    private final DistanceOrderCenterService distanceOrderCenterService;
+    private final AssignCenterToOrderService assignCenterService;
 
     @Override
     public List<ProcessedOrderDTO> assignCenterToOrders() {
@@ -55,7 +52,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
                 } else {
 
-                    double bestDistance = assignBestCenter(order, availableCenters);
+                    double bestDistance = assignCenterService.assignBestCenter(order, availableCenters);
 
                     processedOrderDTO.setDistance(bestDistance);
                     processedOrderDTO.setAssignedLogisticsCenter(order.getAssignedCenter());
@@ -72,37 +69,6 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
         return listProcessedOrdersDTO;
 
-    }
-
-    private double assignBestCenter(Order order, List<Center> availableCenters) {
-        Center bestCenter = findBestCenter(order, availableCenters);
-        assignCenterToTheOrder(order, bestCenter);
-        return calculateDistance(bestCenter, order);
-    }
-
-    private Center findBestCenter(Order order, List<Center> availableCenters) {
-        return availableCenters.stream()
-                .min((center1, center2) -> Double.compare(
-                        distanceOrderCenterService.obtainDistanceBetweenCenterAndOrder(center1, order),
-                        distanceOrderCenterService.obtainDistanceBetweenCenterAndOrder(center2, order)
-                ))
-                .orElseThrow(() -> new CenterNotFoundException(ExceptionMessageConstants.CENTER_NOT_FOUND));
-    }
-
-    private double calculateDistance(Center center, Order order) {
-        return distanceOrderCenterService.obtainDistanceBetweenCenterAndOrder(center, order);
-    }
-
-    private void assignCenterToTheOrder(Order order, Center center) {
-        order.setAssignedCenter(center.getName());
-        order.setStatus(ASSIGNED_STATUS);
-        orderRepository.save(order);
-        incrementCurrentLoadCenter(center);
-    }
-
-    private void incrementCurrentLoadCenter(Center bestCenter) {
-        bestCenter.setCurrentLoad(bestCenter.getCurrentLoad() + 1);
-        centerRepository.save(bestCenter);
     }
 
 }

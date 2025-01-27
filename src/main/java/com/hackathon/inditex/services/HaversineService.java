@@ -4,9 +4,10 @@ import com.hackathon.inditex.entities.Coordinates;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HaversineService {
+public class HaversineService implements IHaversine {
 
-    double calculateHaversineVariable(
+    @Override
+    public double calculateHaversineVariable(
             double latitudeDifferenceRadians,
             double longitudeDifferenceRadians,
             Coordinates centerCoordinates,
@@ -20,19 +21,23 @@ public class HaversineService {
         return sinLatitude + cosCenterLatitude * cosOrderLatitude * sinLongitude;
     }
 
-    private double calculateSinSquare(double angle) {
+    @Override
+    public double calculateSinSquare(double angle) {
         return Math.sin(angle) * Math.sin(angle);
     }
 
-    private double calculateCosine(double degree) {
+    @Override
+    public double calculateCosine(double degree) {
         return Math.cos(Math.toRadians(degree));
     }
 
-    double calculateLatitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
+    @Override
+    public double calculateLatitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
         return Math.toRadians(orderCoordinates.getLongitude() - centerCoordinates.getLongitude());
     }
 
-    protected double calculateLongitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
+    @Override
+    public double calculateLongitudeDifferenceRadians(Coordinates centerCoordinates, Coordinates orderCoordinates) {
         return Math.toRadians(centerCoordinates.getLongitude() - orderCoordinates.getLongitude());
     }
 
