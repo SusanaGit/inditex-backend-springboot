@@ -76,9 +76,8 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
     private double assignBestCenter(Order order, List<Center> availableCenters) {
         Center bestCenter = findBestCenter(order, availableCenters);
-        assignCenterToTheOrder(order, bestCenter.getName());
-        incrementCurrentLoadCenter(bestCenter);
-        return distanceOrderCenterService.obtainDistanceBetweenCenterAndOrder(bestCenter, order);
+        assignCenterToTheOrder(order, bestCenter);
+        return calculateDistance(bestCenter, order);
     }
 
     private Center findBestCenter(Order order, List<Center> availableCenters) {
@@ -90,18 +89,20 @@ public class OrderAssignationsService implements IOrderAssignationsService {
                 .orElseThrow(() -> new CenterNotFoundException(ExceptionMessageConstants.CENTER_NOT_FOUND));
     }
 
+    private double calculateDistance(Center center, Order order) {
+        return distanceOrderCenterService.obtainDistanceBetweenCenterAndOrder(center, order);
+    }
+
+    private void assignCenterToTheOrder(Order order, Center center) {
+        order.setAssignedCenter(center.getName());
+        order.setStatus(ASSIGNED_STATUS);
+        orderRepository.save(order);
+        incrementCurrentLoadCenter(center);
+    }
+
     private void incrementCurrentLoadCenter(Center bestCenter) {
         bestCenter.setCurrentLoad(bestCenter.getCurrentLoad() + 1);
         centerRepository.save(bestCenter);
     }
 
-    private void assignCenterToTheOrder(Order order, String nameBestCenter) {
-
-        order.setAssignedCenter(nameBestCenter);
-
-        order.setStatus(ASSIGNED_STATUS);
-
-        orderRepository.save(order);
-
-    }
 }
