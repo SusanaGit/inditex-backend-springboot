@@ -1,6 +1,5 @@
 package com.hackathon.inditex.services;
 
-import com.hackathon.inditex.constants.CenterMessageConstants;
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
 import com.hackathon.inditex.dtos.CenterDTO;
 import com.hackathon.inditex.entities.Center;
@@ -15,6 +14,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CenterService implements ICenterService {
 
+    public static final String LOGISTICS_CENTER_UPDATED_SUCCESSFULLY = "Logistics center updated successfully.";
+    public static final String LOGISTICS_CENTER_CREATED_SUCCESSFULLY = "Logistics center created successfully.";
+    public static final String LOGISTICS_CENTER_DELETED_SUCCESSFULLY = "Logistics center deleted successfully.";
+
     private final CenterRepository centerRepository;
     private final CenterValidatorService centerValidatorService;
     private final CenterUpdateService centerUpdateService;
@@ -23,7 +26,7 @@ public class CenterService implements ICenterService {
     public String saveCenter(Center newCenter) {
         centerValidatorService.validateNewCenter(newCenter);
         centerRepository.save(newCenter);
-        return CenterMessageConstants.LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
+        return LOGISTICS_CENTER_CREATED_SUCCESSFULLY;
     }
 
     @Override
@@ -36,14 +39,14 @@ public class CenterService implements ICenterService {
         Center currentCenter = obtainCenterById(idCenterToUpdate);
         centerUpdateService.updateCenterValues(currentCenter, updatedCenterDTO);
         centerRepository.save(currentCenter);
-        return CenterMessageConstants.LOGISTICS_CENTER_UPDATED_SUCCESSFULLY;
+        return LOGISTICS_CENTER_UPDATED_SUCCESSFULLY;
 
     }
 
     @Override
     public String deleteCenter(Long idCenterToDelete) {
         centerRepository.deleteById(idCenterToDelete);
-        return CenterMessageConstants.LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
+        return LOGISTICS_CENTER_DELETED_SUCCESSFULLY;
     }
 
     private Center obtainCenterById(Long idCenter) {

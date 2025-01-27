@@ -1,7 +1,6 @@
 package com.hackathon.inditex.services;
 
 import com.hackathon.inditex.constants.ExceptionMessageConstants;
-import com.hackathon.inditex.constants.OrderAssignationsConstants;
 import com.hackathon.inditex.dtos.ProcessedOrderDTO;
 import com.hackathon.inditex.entities.Center;
 import com.hackathon.inditex.entities.Order;
@@ -18,14 +17,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderAssignationsService implements IOrderAssignationsService {
 
+    public static final String ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY = "All centers are at maximum capacity.";
+    public static final String NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE = "No available centers support the order type.";
+    public static final String PENDING_STATUS = "PENDING";
+    public static final String ASSIGNED_STATUS = "ASSIGNED";
+
     private final CenterRepository centerRepository;
     private final OrderRepository orderRepository;
-    private final HaversineService haversineService;
+    private final DistanceOrderCenterService distanceOrderCenterService;
 
     @Override
     public List<ProcessedOrderDTO> assignCenterToOrders() {
 
-        List<Order> ordersPending = orderRepository.findByStatus(OrderAssignationsConstants.PENDING_STATUS);
+        List<Order> ordersPending = orderRepository.findByStatus(PENDING_STATUS);
         List<ProcessedOrderDTO> listProcessedOrdersDTO = new ArrayList<>();
 
         for (Order order : ordersPending) {
@@ -39,7 +43,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
             if (listCentersByCapacity.isEmpty()) {
 
 
-                processedOrderDTO.setMessage(OrderAssignationsConstants.NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE);
+                processedOrderDTO.setMessage(NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE);
 
             } else {
 
@@ -47,7 +51,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
                 if (availableCenters.isEmpty()) {
 
-                    processedOrderDTO.setMessage(OrderAssignationsConstants.ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY);
+                    processedOrderDTO.setMessage(ALL_CENTERS_ARE_AT_MAXIMUM_CAPACITY);
 
                 } else {
 
@@ -74,14 +78,14 @@ public class OrderAssignationsService implements IOrderAssignationsService {
         Center bestCenter = findBestCenter(order, availableCenters);
         assignCenterToTheOrder(order, bestCenter.getName());
         incrementCurrentLoadCenter(bestCenter);
-        return obtainDistanceBetweenCenterAndOrder(bestCenter, order);
+        return distanceOrderCenterService.obtainDistanceBetweenCenterAndOrder(bestCenter, order);
     }
 
     private Center findBestCenter(Order order, List<Center> availableCenters) {
         return availableCenters.stream()
                 .min((center1, center2) -> Double.compare(
-                        obtainDistanceBetweenCenterAndOrder(center1, order),
-                        obtainDistanceBetweenCenterAndOrder(center2, order)
+                        distanceOrderCenterService.obtainDistanceBetweenCenterAndOrder(center1, order),
+                        distanceOrderCenterService.obtainDistanceBetweenCenterAndOrder(center2, order)
                 ))
                 .orElseThrow(() -> new CenterNotFoundException(ExceptionMessageConstants.CENTER_NOT_FOUND));
     }
@@ -95,23 +99,9 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
         order.setAssignedCenter(nameBestCenter);
 
-        order.setStatus(OrderAssignationsConstants.ASSIGNED_STATUS);
+        order.setStatus(ASSIGNED_STATUS);
 
         orderRepository.save(order);
 
-    }
-
-    private double obtainDistanceBetweenCenterAndOrder(Center center, Order order) {
-
-        final int EARTH_RADIUS = 6371;
-
-        double latitudeDifferenceRadians = haversineService.calculateLatitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
-        double longitudeDifferenceRadians = haversineService.calculateLongitudeDifferenceRadians(center.getCoordinates(), order.getCoordinates());
-
-        double a = haversineService.calculateHaversineVariable(latitudeDifferenceRadians, longitudeDifferenceRadians, center.getCoordinates(), order.getCoordinates());
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return EARTH_RADIUS * c;
     }
 }
