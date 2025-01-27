@@ -42,6 +42,7 @@ public class OrderAssignationsService implements IOrderAssignationsService {
 
             if (listCentersByCapacity.isEmpty()) {
 
+
                 processedOrderDTO.setMessage(NO_AVAILABLE_CENTERS_SUPPORT_THE_ORDER_TYPE);
 
             } else {
