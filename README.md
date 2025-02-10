@@ -433,3 +433,4 @@ A3: No, modifying this file may cause the application to malfunction.
 
 
 
+# inditex-backend-springboot
